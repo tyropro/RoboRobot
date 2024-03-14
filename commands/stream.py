@@ -1,6 +1,7 @@
 from discord import app_commands, Interaction, Client, User
 from config import Config
 import requests
+import logging
 
 
 @app_commands.guild_only()
@@ -18,6 +19,8 @@ class StreamCommands(app_commands.Group, name="stream"):
         # Makes a PATCH request to the Twitch Helix API to change
         # the title of the stream to the provided title from the user
         
+        logging.info(f"{interaction.user}: Changing title to {title}")
+        
         headers = \
             {
                 "Authorization": "Bearer " + Config.CONFIG["Secrets"]["Twitch"]["OAuth"],
@@ -30,7 +33,12 @@ class StreamCommands(app_commands.Group, name="stream"):
                 "broadcaster_id": Config.CONFIG["Twitch"]["ChannelID"]
             }
         
-        requests.patch("https://api.twitch.tv/helix/channels", headers=headers, params=params).raise_for_status()
+        try:
+            requests.patch("https://api.twitch.tv/helix/channels", headers=headers, params=params).raise_for_status()
+        except requests.exceptions.HTTPError:
+            logging.error(f"{interaction.user}: Error changing title")
+            await interaction.response.send_message(f"Error", ephemeral=True)
+            return
         
         await interaction.response.send_message(
             f"Title changed to: {title}", ephemeral=True
@@ -44,6 +52,8 @@ class StreamCommands(app_commands.Group, name="stream"):
         # Makes a GET request to the Twitch Helix API to get the game ID
         # of the provided game name. Then makes a PATCH request to the Twitch
         # Helix API to change the game of the stream to the provided game from the user
+        
+        logging.info(f"{interaction.user}: Changing game to {game}")
         
         headers = \
             {
@@ -59,6 +69,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         r = requests.get("https://api.twitch.tv/helix/games", headers=headers, params=params).json()
         
         if len(r["data"]) == 0:
+            logging.error(f"{interaction.user}: Error fetching game")
             await interaction.response.send_message(f"Game not found", ephemeral=True)
             return
         
@@ -69,7 +80,12 @@ class StreamCommands(app_commands.Group, name="stream"):
                 "game_id": game_id,
                 "broadcaster_id": Config.CONFIG["Twitch"]["ChannelID"]
             }
-            
-        requests.patch("https://api.twitch.tv/helix/channels", headers=headers, params=params).raise_for_status()
+        
+        try:
+            requests.patch("https://api.twitch.tv/helix/channels", headers=headers, params=params).raise_for_status()
+        except requests.exceptions.HTTPError:
+            logging.error(f"{interaction.user}: Error changing game")
+            await interaction.response.send_message(f"Error", ephemeral=True)
+            return
         
         await interaction.response.send_message(f"Game set to: {r["data"][0]["name"]}", ephemeral=True)
