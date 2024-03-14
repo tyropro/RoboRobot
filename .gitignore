@@ -1,2 +1,6 @@
 config.yaml
 secrets.yaml
+
+# compiled
+__pycache__/
+*.py[cod]
