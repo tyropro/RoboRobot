@@ -2,7 +2,7 @@
 
 Discord bot created to interact with servers and Twitch streams.
 
-# Getting OAuth Token
+## Getting OAuth Token
 
 Follow instructions under 'Implicit Grant Flow' at the [Twitch Docs](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/).
 
