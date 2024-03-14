@@ -26,3 +26,5 @@ http://localhost:3000/
     &scope=channel_editor
     &token_type=bearer
 ```
+
+Copy your access token & add it into the secrets.yaml file.
