@@ -11,13 +11,14 @@ Your resulting URI should look like:
 ```
 https://id.twitch.tv/oauth2/authorize
     ?response_type=token
-    &client_id=<YOUR CLIENT ID HERE>
+    &client_id=<YOUR APP CLIENT ID HERE>
     &redirect_uri=http://localhost:3000
     &scope=channel_editor
     &response_type=token
 ```
 
-And the response URI should look like:
+You will need to click 'Authorize' and a blank page will be presented.
+You will find the response URI in your address bar and it should look like:
 
 ```
 http://localhost:3000/
