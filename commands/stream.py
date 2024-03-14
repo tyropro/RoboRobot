@@ -17,6 +17,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         """Change the stream title"""
         # Makes a PATCH request to the Twitch Helix API to change
         # the title of the stream to the provided title from the user
+        
         headers = \
             {
                 "Authorization": "Bearer " + Config.CONFIG["Secrets"]["Twitch"]["OAuth"],
@@ -43,6 +44,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         # Makes a GET request to the Twitch Helix API to get the game ID
         # of the provided game name. Then makes a PATCH request to the Twitch
         # Helix API to change the game of the stream to the provided game from the user
+        
         headers = \
             {
                 "Authorization": "Bearer " + Config.CONFIG["Secrets"]["Twitch"]["OAuth"],
