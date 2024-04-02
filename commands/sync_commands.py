@@ -19,7 +19,7 @@ class SyncCommands(app_commands.Group, name="sync"):
     @app_commands.checks.has_role("pink")
     async def sync(self, interaction: Interaction) -> None:
         """Manually sync slash commands to guild"""
-        logging.info(f"{interaction.user}: Syncing commands to guild {interaction.guild}")
+        LOG.info(f"[{interaction.user}] Syncing commands to guild {interaction.guild}")
         guild = interaction.guild
         self.tree.clear_commands(guild=guild)
         SyncUtils.add_commands_to_tree(self.tree, self.client, override=True)
