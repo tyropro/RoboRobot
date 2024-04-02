@@ -1,16 +1,5 @@
 from discord import app_commands, Client
-# from commands.connect_four import ConnectFourCommands
-# from commands.manager_commands import ManagerCommands
-# from commands.meme_commands import MemeCommands
-# from commands.mod_commands import ModCommands
-# from commands.overlay_commands import OverlayCommands
-# from commands.point_history_commands import PointHistoryCommands
-# from commands.reaction_commands import ReactionCommands
-# from commands.temprole_commands import TemproleCommands
-# from commands.viewer_commands import ViewerCommands
-# from commands.t3_commands import T3Commands
-# from commands.vod_commands import VodCommands
-from commands.stream import StreamCommands
+from bot.commands.stream_commands import StreamCommands
 import logging
 
 LOG = logging.getLogger(__name__)
