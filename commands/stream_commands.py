@@ -3,6 +3,8 @@ from config import Config
 import requests
 import logging
 
+LOG = logging.getLogger(__name__)
+
 
 @app_commands.guild_only()
 class StreamCommands(app_commands.Group, name="stream"):
@@ -19,7 +21,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         # Makes a PATCH request to the Twitch Helix API to change
         # the title of the stream to the provided title from the user
         
-        logging.info(f"{interaction.user}: Changing title to {title}")
+        LOG.info(f"[{interaction.user}] Title: {title}")
         
         headers = \
             {
@@ -36,7 +38,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         try:
             requests.patch("https://api.twitch.tv/helix/channels", headers=headers, params=params).raise_for_status()
         except requests.exceptions.HTTPError:
-            logging.error(f"{interaction.user}: Error changing title")
+            LOG.error(f"[{interaction.user}] Error changing title")
             await interaction.response.send_message(f"Error", ephemeral=True)
             return
         
@@ -53,7 +55,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         # of the provided game name. Then makes a PATCH request to the Twitch
         # Helix API to change the game of the stream to the provided game from the user
         
-        logging.info(f"{interaction.user}: Changing game to {game}")
+        LOG.info(f"[{interaction.user}] Game: {game}")
         
         headers = \
             {
@@ -69,7 +71,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         r = requests.get("https://api.twitch.tv/helix/games", headers=headers, params=params).json()
         
         if len(r["data"]) == 0:
-            logging.error(f"{interaction.user}: Error fetching game")
+            LOG.error(f"[{interaction.user}] Error fetching game")
             await interaction.response.send_message(f"Game not found", ephemeral=True)
             return
         
@@ -84,7 +86,7 @@ class StreamCommands(app_commands.Group, name="stream"):
         try:
             requests.patch("https://api.twitch.tv/helix/channels", headers=headers, params=params).raise_for_status()
         except requests.exceptions.HTTPError:
-            logging.error(f"{interaction.user}: Error changing game")
+            LOG.error(f"[{interaction.user}] Error changing game")
             await interaction.response.send_message(f"Error", ephemeral=True)
             return
         
