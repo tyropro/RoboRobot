@@ -1,5 +1,9 @@
+# secrets
 config.yaml
 secrets.yaml
+
+# configuration
+.editorconfig
 
 # compiled
 __pycache__/
