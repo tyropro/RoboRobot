@@ -1,4 +1,4 @@
-from discord import app_commands, Interaction, Client, User
+from discord import app_commands, Interaction, Client
 from config import Config
 import requests
 import logging
