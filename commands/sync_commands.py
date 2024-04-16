@@ -1,4 +1,5 @@
 from discord import Interaction, app_commands, Client
+from discord.utils import get
 from config import Config
 from util.sync_utils import SyncUtils
 import logging
@@ -21,6 +22,19 @@ class SyncCommands(app_commands.Group, name="sync"):
         """Manually sync slash commands to guild"""
         LOG.info(f"[{interaction.user}] Syncing commands to guild {interaction.guild}")
         guild = interaction.guild
+        self.tree.clear_commands(guild=guild)
+        SyncUtils.add_commands_to_tree(self.tree, self.client, override=True)
+        self.tree.copy_global_to(guild=guild)
+        await self.tree.sync(guild=guild)
+        await interaction.response.send_message("Commands synced", ephemeral=True)
+
+    @app_commands.command(name="guild")
+    @app_commands.checks.has_role("pink")
+    @app_commands.describe(guild="Guild to sync commands to")
+    async def guild(self, interaction: Interaction, guild: str) -> None:
+        """Manually sync slash commands to guild"""
+        guild = self.client.get_guild(int(guild))
+        LOG.info(f"[{interaction.user}] Syncing commands to guild {guild}")
         self.tree.clear_commands(guild=guild)
         SyncUtils.add_commands_to_tree(self.tree, self.client, override=True)
         self.tree.copy_global_to(guild=guild)
