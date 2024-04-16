@@ -88,7 +88,6 @@ class MusicCommands(app_commands.Group, name="music"):
             source, after=lambda e: print(f"Player error: {e}") if e else None
         )
 
-
     @app_commands.command(name="play")
     @app_commands.describe(url="URL of the song")
     async def play(self, interaction: Interaction, url: str):
@@ -97,7 +96,7 @@ class MusicCommands(app_commands.Group, name="music"):
         await self.ensure_voice(interaction)
 
         async with interaction.channel.typing():
-            player = await YTDLSource.from_url(url, loop=self.client.loop)
+            player = await YTDLSource.from_url(url, loop=self.client.loop, stream=False)
             await interaction.response.send_message(f"Now playing: {player.title}")
             interaction.guild.voice_client.play(
                 player, after=lambda e: print(f"Player error: {e}") if e else None
@@ -129,17 +128,19 @@ class MusicCommands(app_commands.Group, name="music"):
         await interaction.response.send_message("Bye bye! (´・ω・｀)")
 
     async def ensure_voice(self, interaction: Interaction):
-      if interaction.guild.voice_client is None:
-        if interaction.user.voice:
-          await interaction.user.voice.channel.connect()
-        else:
-            await interaction.response.send_message(
-              "You are not connected to a voice channel."
-            )
-            raise app_commands.CommandError(
-              "Author not connected to a voice channel."
-            )
-      elif interaction.guild.voice_client.is_playing():
-        interaction.guild.voice_client.stop()
+        if interaction.guild.voice_client is None:
+            if interaction.user.voice:
+                await interaction.user.voice.channel.connect()
+            else:
+                await interaction.response.send_message(
+                    "You are not connected to a voice channel."
+                )
+                raise app_commands.CommandError(
+                    "Author not connected to a voice channel."
+                )
+        elif interaction.guild.voice_client.is_playing():
+            interaction.guild.voice_client.stop()
 
-
+    async def get_yt(self, interaction: Interaction, url: str):
+        player = await YTDLSource.from_url(url, loop=self.client.loop)
+        return player
