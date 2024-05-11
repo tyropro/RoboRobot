@@ -116,7 +116,6 @@ class MusicCommands(app_commands.Group, name="music"):
                 color=Color.purple(),
             )
             embed.add_field(name="Track: ", value=player.title, inline=False)
-            embed.add_field(name="Channel: ", value=player.channel, inline=False)
 
             await interaction.edit_original_response(embed=embed)
 
