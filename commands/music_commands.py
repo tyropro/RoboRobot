@@ -4,7 +4,10 @@ from discord import (
     Client,
     FFmpegPCMAudio,
     PCMVolumeTransformer,
+    Embed,
+    Color,
 )
+from datetime import datetime
 import yt_dlp
 import logging
 import asyncio
@@ -95,9 +98,28 @@ class MusicCommands(app_commands.Group, name="music"):
 
         await self.ensure_voice(interaction)
 
+        embed = Embed(
+            title="Tyro's Super Epic Music Bot",
+            description="Searching for the song...",
+            color=Color.blurple(),
+        )
+        embed.add_field(name="URL: ", value=url, inline=False)
+
+        await interaction.response.send_message(embed=embed)
+
         async with interaction.channel.typing():
             player = await YTDLSource.from_url(url, loop=self.client.loop, stream=False)
-            await interaction.response.send_message(f"Now playing: {player.title}")
+
+            embed = Embed(
+                title="Tyro's Super Epic Music Bot",
+                description=f"Now playing",
+                color=Color.purple(),
+            )
+            embed.add_field(name="Track: ", value=player.title, inline=False)
+            embed.add_field(name="Channel: ", value=player.channel, inline=False)
+
+            await interaction.edit_original_response(embed=embed)
+
             interaction.guild.voice_client.play(
                 player, after=lambda e: print(f"Player error: {e}") if e else None
             )
