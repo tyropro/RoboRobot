@@ -91,9 +91,9 @@ class MusicCommands(app_commands.Group, name="music"):
             source, after=lambda e: print(f"Player error: {e}") if e else None
         )
 
-    @app_commands.command(name="play")
+    @app_commands.command(name="url")
     @app_commands.describe(url="URL of the song")
-    async def play(self, interaction: Interaction, url: str):
+    async def url(self, interaction: Interaction, url: str):
         """Plays from a url (almost anything youtube_dl supports)"""
 
         await self.ensure_voice(interaction)
@@ -109,6 +109,40 @@ class MusicCommands(app_commands.Group, name="music"):
 
         async with interaction.channel.typing():
             player = await YTDLSource.from_url(url, loop=self.client.loop, stream=False)
+
+            embed = Embed(
+                title="Tyro's Super Epic Music Bot",
+                description=f"Now playing",
+                color=Color.purple(),
+            )
+            embed.add_field(name="Track: ", value=player.title, inline=False)
+
+            await interaction.edit_original_response(embed=embed)
+
+            interaction.guild.voice_client.play(
+                player, after=lambda e: print(f"Player error: {e}") if e else None
+            )
+
+    @app_commands.command(name="play")
+    @app_commands.describe(query="URL of the song")
+    async def play(self, interaction: Interaction, query: str):
+        """Plays from a search term (almost anything youtube_dl supports)"""
+
+        await self.ensure_voice(interaction)
+
+        embed = Embed(
+            title="Tyro's Super Epic Music Bot",
+            description="Searching for the song...",
+            color=Color.blurple(),
+        )
+        embed.add_field(name="URL: ", value=query, inline=False)
+
+        await interaction.response.send_message(embed=embed)
+
+        async with interaction.channel.typing():
+            player = await YTDLSource.from_url(
+                f"ytsearch:{query}", loop=self.client.loop, stream=False
+            )
 
             embed = Embed(
                 title="Tyro's Super Epic Music Bot",
